@@ -45,14 +45,16 @@ export const toggleLike = async (req, res) => {
     try {
         const _id = req.params.postId;
         const userId = (req.user);
+        const { username } = req.body;
 
         const post = await Post.findOne({ _id });
 
-        if (post.likes.includes(userId) === true) {
-            const index = post.likes.findIndex(id => id === userId);
+        if (post.likes.some(obj => obj.id === userId)) {
+            console.log('boom');
+            const index = post.likes.findIndex(obj => obj.id === userId);
             post.likes.splice(index, 1);
         } else {
-            post.likes.push(userId);
+            post.likes.push({ id: userId, name: username });
         }
         await post.save();
         res.json(post.likes);
